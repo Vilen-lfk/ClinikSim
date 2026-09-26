@@ -25,7 +25,7 @@ export default function Layout() {
       <div className="flex min-h-screen">
         
         {/* Боковое меню */}
-        <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-card p-4 md:flex">
+        <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-card p-4 md:flex print:hidden">
           <div className="mb-6 px-1 font-serif text-lg font-medium text-ink">
             ClinicSim
           </div>
@@ -69,7 +69,7 @@ export default function Layout() {
         </main>
 
         {/* Мобильная навигация */}
-        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-between border-t border-line bg-card px-2 py-1.5 md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-between border-t border-line bg-card px-2 py-1.5 md:hidden print:hidden">
           {NAV.map((item) => (
             <NavLink
               key={item.to}

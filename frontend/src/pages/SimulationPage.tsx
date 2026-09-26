@@ -122,6 +122,7 @@ export default function SimulationPage() {
           messages={messages}
           isStreaming={streaming}
           disabled={showDiagnosis || finish.isPending}
+          patientName={p.name}
           onSend={handleSend}
         />
       </div>

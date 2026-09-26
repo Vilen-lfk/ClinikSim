@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import Button from "../components/Button";
 import PulseLine from "../components/PulseLine";
 import { useAuth } from "../context/AuthContext";
+import OnboardingTour from "../components/OnboardingTour";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">
+      <OnboardingTour />
       <header className="space-y-3">
         <div>
           <h1 className="font-serif text-3xl font-medium text-ink">

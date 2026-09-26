@@ -26,7 +26,7 @@ export default function ScenarioSelector({ scenarios, selectedId, onSelect }: Pr
             active={active}
             onClick={() => onSelect(s.id)}
             layoutId="scenario-highlight"
-            className="pt-5"
+            className="pt-5 card-texture"
           >
             <span className={`absolute inset-x-0 top-0 h-1.5 ${d.bar}`} />
             <span className="mb-2 inline-block font-mono text-xs text-muted">{d.label}</span>

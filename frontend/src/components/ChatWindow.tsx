@@ -7,10 +7,11 @@ interface Props {
   messages: Message[];
   isStreaming: boolean;
   disabled?: boolean;
+  patientName: string;
   onSend: (text: string) => Promise<boolean>;
 }
 
-export default function ChatWindow({ messages, isStreaming, disabled, onSend }: Props) {
+export default function ChatWindow({ messages, isStreaming, disabled, patientName, onSend }: Props) {
   const [text, setText] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +35,7 @@ export default function ChatWindow({ messages, isStreaming, disabled, onSend }: 
       void submit();
     }
   };
+  
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-line bg-paper">
@@ -47,6 +49,7 @@ export default function ChatWindow({ messages, isStreaming, disabled, onSend }: 
           <MessageBubble
             key={m.id}
             message={m}
+            patientName={patientName}
             streaming={isStreaming && i === messages.length - 1 && m.role === "patient"}
           />
         ))}

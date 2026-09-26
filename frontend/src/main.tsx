@@ -6,9 +6,8 @@ import App from "./App";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
 
-// staleTime: Infinity и отключённый refetch на фокус нужны, чтобы фоновая перезагрузка
-// сессии не затирала локальное состояние чата во время стриминга
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { staleTime: Infinity, refetchOnWindowFocus: false, retry: false },
@@ -20,9 +19,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
+          <ToastProvider>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </ToastProvider>
         </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>

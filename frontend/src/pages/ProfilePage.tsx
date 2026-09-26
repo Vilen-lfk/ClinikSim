@@ -1,31 +1,33 @@
-import { useState } from "react";
+import { motion } from "framer-motion";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "../api/client";
 import Button from "../components/Button";
+import DonutChart from "../components/DonutChart";
 import ErrorBanner from "../components/ErrorBanner";
+import SelectCard from "../components/SelectCard";
+import Sparkline from "../components/Sparkline";
+import { ACCENT_PRESETS, accentSwatch } from "../constants/accents";
 import { SPECIALTY_LABELS } from "../constants/taxonomy";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import SelectCard from "../components/SelectCard";
-import { motion } from "framer-motion";
-import { ACCENT_PRESETS, accentSwatch } from "../constants/accents";
+import { useToast } from "../context/ToastContext";
+import { useState } from "react";
 
 export default function ProfilePage() {
   const { user, logout, updateProfile } = useAuth();
-    const { theme, setTheme, accent, setAccent, resolvedDark } = useTheme();
+  const { theme, setTheme, accent, setAccent, resolvedDark } = useTheme();
+  const { showToast } = useToast();
   const history = useQuery({ queryKey: ["history"], queryFn: api.getHistory });
 
   const [fullName, setFullName] = useState(user?.full_name ?? "");
   const [specialty, setSpecialty] = useState(user?.specialty ?? "");
   const [course, setCourse] = useState(user?.course ?? "");
   const [profileError, setProfileError] = useState<string | null>(null);
-  const [profileSaved, setProfileSaved] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [passwordSaved, setPasswordSaved] = useState(false);
 
   const [notifyNew, setNotifyNew] = useState(() => localStorage.getItem("notify_new") !== "0");
   const [notifyResults, setNotifyResults] = useState(() => localStorage.getItem("notify_results") !== "0");
@@ -33,10 +35,7 @@ export default function ProfilePage() {
 
   const saveProfile = useMutation({
     mutationFn: () => updateProfile({ full_name: fullName, specialty, course }),
-    onSuccess: () => {
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 2000);
-    },
+    onSuccess: () => showToast("Профиль сохранён"),
     onError: (e) => setProfileError((e as Error).message),
   });
 
@@ -46,8 +45,7 @@ export default function ProfilePage() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setPasswordSaved(true);
-      setTimeout(() => setPasswordSaved(false), 2000);
+      showToast("Пароль обновлён");
     },
     onError: (e) => setPasswordError((e as Error).message),
   });
@@ -56,10 +54,12 @@ export default function ProfilePage() {
     localStorage.setItem("notify_new", notifyNew ? "1" : "0");
     localStorage.setItem("notify_results", notifyResults ? "1" : "0");
     localStorage.setItem("notify_reminders", notifyReminders ? "1" : "0");
+    showToast("Настройки уведомлений сохранены");
   };
 
   const sessions = history.data ?? [];
   const finished = sessions.filter((s) => s.status === "finished" && s.score !== null);
+  const chronological = [...finished].reverse(); // история приходит новыми сверху, для графика нужен хронологический порядок
   const avg = finished.length ? finished.reduce((a, s) => a + (s.score ?? 0), 0) / finished.length : 0;
   const best = finished.length ? Math.max(...finished.map((s) => s.score ?? 0)) : 0;
   const successRate = finished.length
@@ -110,9 +110,19 @@ export default function ProfilePage() {
         ))}
       </section>
 
+      {finished.length > 0 && (
+        <section className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
+          <DonutChart value={avg} label="Средний балл" />
+          <div>
+            <div className="mb-2 text-sm font-medium text-ink">Динамика результатов</div>
+            <Sparkline values={chronological.map((s) => s.score ?? 0)} />
+          </div>
+        </section>
+      )}
+
       {bySpecialty.length > 0 && (
         <section className="space-y-3 rounded-xl border border-line bg-card p-4">
-          <h2 className="font-serif text-lg font-medium text-ink">Мой прогресс</h2>
+          <h2 className="font-serif text-lg font-medium text-ink">Мой прогресс по специальностям</h2>
           {bySpecialty.map((s) => (
             <div key={s.key}>
               <div className="flex justify-between text-sm">
@@ -158,7 +168,6 @@ export default function ProfilePage() {
           </div>
         </div>
         {profileError && <ErrorBanner message={profileError} />}
-        {profileSaved && <p className="text-sm text-teal">Сохранено.</p>}
         <Button
           onClick={() => {
             setProfileError(null);
@@ -202,7 +211,6 @@ export default function ProfilePage() {
           </div>
         </div>
         {passwordError && <ErrorBanner message={passwordError} />}
-        {passwordSaved && <p className="text-sm text-teal">Пароль обновлён.</p>}
         <Button
           onClick={() => {
             setPasswordError(null);
@@ -243,13 +251,7 @@ export default function ProfilePage() {
           <div className="mb-2 text-sm font-medium text-ink">Тема</div>
           <div className="flex gap-2">
             {(["light", "dark", "system"] as const).map((key) => (
-              <SelectCard
-                key={key}
-                active={theme === key}
-                onClick={() => setTheme(key)}
-                layoutId="theme-highlight"
-                className="px-3 py-1.5 text-sm"
-              >
+              <SelectCard key={key} active={theme === key} onClick={() => setTheme(key)} layoutId="theme-highlight" className="px-3 py-1.5 text-sm">
                 {key === "light" ? "Светлая" : key === "dark" ? "Тёмная" : "Системная"}
               </SelectCard>
             ))}
@@ -258,17 +260,12 @@ export default function ProfilePage() {
 
         <div>
           <div className="mb-2 text-sm font-medium text-ink">Цвет акцента</div>
-          <p className="mb-3 text-xs text-muted">Влияет на кнопки, подсветку выбора и активный пункт меню.</p>
+          <p className="mb-3 text-xs text-muted">Влияет на кнопки, фон, карточки и активный пункт меню.</p>
           <div className="flex flex-wrap gap-4">
             {ACCENT_PRESETS.map((preset) => {
               const active = accent === preset.key;
               return (
-                <button
-                  key={preset.key}
-                  onClick={() => setAccent(preset.key)}
-                  title={preset.label}
-                  className="flex flex-col items-center gap-1.5"
-                >
+                <button key={preset.key} onClick={() => setAccent(preset.key)} title={preset.label} className="flex flex-col items-center gap-1.5">
                   <span className="relative flex h-10 w-10 items-center justify-center rounded-full">
                     {active && (
                       <motion.span
@@ -278,10 +275,7 @@ export default function ProfilePage() {
                         style={{ ["--tw-ring-color" as string]: accentSwatch(preset, resolvedDark) }}
                       />
                     )}
-                    <span
-                      className="h-7 w-7 rounded-full border border-line"
-                      style={{ backgroundColor: accentSwatch(preset, resolvedDark) }}
-                    />
+                    <span className="h-7 w-7 rounded-full border border-line" style={{ backgroundColor: accentSwatch(preset, resolvedDark) }} />
                   </span>
                   <span className={`text-[11px] ${active ? "text-ink" : "text-muted"}`}>{preset.label}</span>
                 </button>

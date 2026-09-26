@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import EmptyState from "../components/EmptyState";
 import Modal from "../components/Modal";
 
 type Category = "symptom" | "disease" | "anamnesis";
@@ -120,7 +121,7 @@ export default function KnowledgeBasePage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((a) => (
-          <div key={a.id} className="flex flex-col rounded-xl border border-line bg-card p-4">
+          <div key={a.id} className="card-texture flex flex-col rounded-xl border border-line bg-card p-4">
             <div className="mb-2 flex items-center gap-2">
               <span className="text-xl">{a.icon}</span>
               <span className="font-mono text-xs text-muted">{CATEGORY_LABELS[a.category]}</span>
@@ -132,7 +133,11 @@ export default function KnowledgeBasePage() {
             </button>
           </div>
         ))}
-        {filtered.length === 0 && <p className="col-span-full py-8 text-center text-muted">Ничего не найдено</p>}
+        {filtered.length === 0 && (
+          <div className="col-span-full">
+            <EmptyState icon="🔍" title="Ничего не найдено" description="Попробуйте изменить запрос или выбрать другую категорию." />
+          </div>
+        )}
       </div>
 
       <Modal open={!!selected} onClose={() => setSelected(null)}>

@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import Button from "../components/Button";
 import { useAuth } from "../context/AuthContext";
 import ErrorBanner from "../components/ErrorBanner";
 import { SkeletonRows } from "../components/Skeleton";
+import EmptyState from "../components/EmptyState";
+import { Link } from "react-router-dom";
 
 export default function HistoryPage() {
   const { user } = useAuth();
@@ -51,13 +52,24 @@ export default function HistoryPage() {
         ))}
       </motion.section>
 
-            {history.isLoading ? (
+      {history.isLoading ? (
         <SkeletonRows count={4} />
+      ) : (history.data ?? []).length === 0 ? (
+        <EmptyState
+          icon="🩺"
+          title="Попыток пока нет"
+          description="Пройдите первый клинический сценарий, чтобы увидеть здесь свою историю."
+          action={
+            <Link to="/new-simulation">
+              <Button>Начать симуляцию</Button>
+            </Link>
+          }
+        />
       ) : (
         <section className="overflow-x-auto rounded-xl border border-line bg-card">
           {/* ...существующая таблица без изменений... */}
         </section>
-      )}    
+      )}
       <section className="overflow-x-auto rounded-xl border border-line bg-card">
         <table className="w-full text-sm">
           <thead className="bg-paper text-left text-muted">

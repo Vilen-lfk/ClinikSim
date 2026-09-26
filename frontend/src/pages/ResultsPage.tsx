@@ -6,6 +6,7 @@ import html2pdf from "html2pdf.js";
 import { api } from "../api/client";
 import Button from "../components/Button";
 import Stamp from "../components/Stamp";
+import { useToast } from "../context/ToastContext";
 
 function useCountUp(target: number, duration = 900) {
   const [value, setValue] = useState(0);
@@ -39,6 +40,7 @@ const itemVariants = {
 };
 
 export default function ResultsPage() {
+  
   const { id } = useParams();
   const sessionId = Number(id);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -48,7 +50,7 @@ export default function ResultsPage() {
     queryKey: ["session", sessionId],
     queryFn: () => api.getSession(sessionId),
   });
-
+  const { showToast } = useToast();
   const ev = session?.evaluation;
   const displayedScore = useCountUp(ev?.total_score ?? 0);
 
@@ -66,6 +68,7 @@ export default function ResultsPage() {
         })
         .from(contentRef.current)
         .save();
+      showToast("PDF сохранён");
     } finally {
       setIsExporting(false);
     }
@@ -102,7 +105,7 @@ export default function ResultsPage() {
           </div>
         </motion.header>
 
-        <motion.section variants={itemVariants} className="grid gap-3 sm:grid-cols-2">
+        <motion.section variants={itemVariants} className="grid gap-3 sm:grid-cols-2" break-inside-avoid>
           <div
             className={`rounded-xl border p-4 ${
               ev.diagnosis_correct ? "border-teal bg-teal-light" : "border-clay bg-clay-light"
@@ -120,7 +123,7 @@ export default function ResultsPage() {
           </div>
         </motion.section>
 
-        <motion.section variants={itemVariants} className="space-y-3 rounded-xl border border-line bg-card p-4">
+        <motion.section variants={itemVariants} className="space-y-3 rounded-xl border border-line bg-card p-4" break-inside-avoid>
           <h2 className="font-serif text-lg font-medium text-ink">Оценка по критериям</h2>
           {ev.criteria.map((c) => {
             const pct = Math.round((c.score / c.max_score) * 100);
@@ -147,7 +150,7 @@ export default function ResultsPage() {
         </motion.section>
 
         {ev.missed_questions.length > 0 && (
-          <motion.section variants={itemVariants} className="rounded-xl border border-gold/40 bg-card p-4">
+          <motion.section variants={itemVariants} className="rounded-xl border border-gold/40 bg-card p-4 break-inside-avoid">
             <h2 className="mb-2 font-serif text-lg font-medium text-ink">Пропущенные вопросы</h2>
             <ul className="list-disc space-y-1 pl-5 text-sm text-ink">
               {ev.missed_questions.map((q, i) => (
@@ -158,7 +161,7 @@ export default function ResultsPage() {
         )}
 
         {ev.strengths.length > 0 && (
-          <motion.section variants={itemVariants} className="rounded-xl border border-teal/30 bg-teal-light p-4">
+          <motion.section variants={itemVariants} className="rounded-xl border border-teal/30 bg-teal-light p-4" break-inside-avoid>
             <h2 className="mb-2 font-serif text-lg font-medium text-ink">Сильные стороны</h2>
             <ul className="list-disc space-y-1 pl-5 text-sm text-ink">
               {ev.strengths.map((s, i) => (
@@ -168,12 +171,12 @@ export default function ResultsPage() {
           </motion.section>
         )}
 
-        <motion.section variants={itemVariants} className="rounded-xl border border-line bg-card p-4">
+        <motion.section variants={itemVariants} className="rounded-xl border border-line bg-card p-4" break-inside-avoid>
           <h2 className="mb-2 font-serif text-lg font-medium text-ink">Обратная связь преподавателя</h2>
           <p className="max-w-[70ch] whitespace-pre-wrap text-sm text-ink">{ev.feedback}</p>
         </motion.section>
 
-        <motion.details variants={itemVariants} open className="rounded-xl border border-line bg-card p-4">
+        <motion.details variants={itemVariants} open className="rounded-xl border border-line bg-card p-4" break-inside-avoid>
           <summary className="cursor-pointer font-serif text-lg font-medium text-ink">
             Протокол диалога ({session.messages.length})
           </summary>

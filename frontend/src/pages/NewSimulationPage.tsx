@@ -8,10 +8,10 @@ import { SkeletonScenarios } from "../components/Skeleton";
 import SelectCard from "../components/SelectCard";
 
 const SPECIALTIES = [
-  { key: "therapy", label: "Терапия", icon: "🩺" },
-  { key: "cardiology", label: "Кардиология", icon: "❤️" },
-  { key: "neurology", label: "Неврология", icon: "🧠" },
-  { key: "surgery", label: "Хирургия", icon: "🔬" },
+  { key: "therapy", label: "Терапия", icon: "" },
+  { key: "cardiology", label: "Кардиология", icon: "" },
+  { key: "neurology", label: "Неврология", icon: "" },
+  { key: "surgery", label: "Хирургия", icon: "" },
 ];
 
 const DIFFICULTIES = [
