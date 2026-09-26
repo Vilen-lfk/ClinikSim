@@ -1,0 +1,23 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
+
+from app.config import settings
+
+# check_same_thread=False нужен SQLite при работе из разных потоков FastAPI
+connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
+
+engine = create_engine(settings.database_url, connect_args=connect_args)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
+
+
+class Base(DeclarativeBase):
+    """Базовый класс всех моделей."""
+
+
+def get_db():
+    """Зависимость FastAPI: сессия БД на время запроса."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
