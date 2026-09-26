@@ -27,7 +27,7 @@ export default function Layout() {
         {/* Боковое меню */}
         <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-card p-4 md:flex">
           <div className="mb-6 px-1 font-serif text-lg font-medium text-ink">
-            Симулятор
+            ClinicSim
           </div>
 
           <nav className="flex-1 space-y-1">

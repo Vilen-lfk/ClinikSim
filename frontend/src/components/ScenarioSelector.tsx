@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type { ScenarioListItem } from "../types";
+import SelectCard from "./SelectCard";
 
 interface Props {
   scenarios: ScenarioListItem[];
@@ -20,15 +21,12 @@ export default function ScenarioSelector({ scenarios, selectedId, onSelect }: Pr
         const d = DIFFICULTY[s.difficulty] ?? { label: s.difficulty, bar: "bg-muted" };
         const active = s.id === selectedId;
         return (
-          <motion.button
+          <SelectCard
             key={s.id}
+            active={active}
             onClick={() => onSelect(s.id)}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.15 }}
-            className={`relative overflow-hidden rounded-lg border bg-card p-4 pt-5 text-left ${
-              active ? "border-teal shadow-md" : "border-line"
-            }`}
+            layoutId="scenario-highlight"
+            className="pt-5"
           >
             <span className={`absolute inset-x-0 top-0 h-1.5 ${d.bar}`} />
             <span className="mb-2 inline-block font-mono text-xs text-muted">{d.label}</span>
@@ -45,7 +43,7 @@ export default function ScenarioSelector({ scenarios, selectedId, onSelect }: Pr
                 </motion.span>
               )}
             </AnimatePresence>
-          </motion.button>
+          </SelectCard>
         );
       })}
     </div>

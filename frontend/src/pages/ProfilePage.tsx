@@ -6,10 +6,13 @@ import ErrorBanner from "../components/ErrorBanner";
 import { SPECIALTY_LABELS } from "../constants/taxonomy";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import SelectCard from "../components/SelectCard";
+import { motion } from "framer-motion";
+import { ACCENT_PRESETS, accentSwatch } from "../constants/accents";
 
 export default function ProfilePage() {
   const { user, logout, updateProfile } = useAuth();
-  const { theme, setTheme } = useTheme();
+    const { theme, setTheme, accent, setAccent, resolvedDark } = useTheme();
   const history = useQuery({ queryKey: ["history"], queryFn: api.getHistory });
 
   const [fullName, setFullName] = useState(user?.full_name ?? "");
@@ -233,20 +236,58 @@ export default function ProfilePage() {
         </Button>
       </section>
 
-      <section className="space-y-3 rounded-xl border border-line bg-card p-4">
+      <section className="space-y-4 rounded-xl border border-line bg-card p-4">
         <h2 className="font-serif text-lg font-medium text-ink">Настройки · Внешний вид</h2>
-        <div className="flex gap-2">
-          {(["light", "dark", "system"] as const).map((key) => (
-            <button
-              key={key}
-              onClick={() => setTheme(key)}
-              className={`rounded-lg border px-3 py-1.5 text-sm ${
-                theme === key ? "border-teal bg-teal-light text-teal-dark" : "border-line text-muted"
-              }`}
-            >
-              {key === "light" ? "Светлая" : key === "dark" ? "Тёмная" : "Системная"}
-            </button>
-          ))}
+
+        <div>
+          <div className="mb-2 text-sm font-medium text-ink">Тема</div>
+          <div className="flex gap-2">
+            {(["light", "dark", "system"] as const).map((key) => (
+              <SelectCard
+                key={key}
+                active={theme === key}
+                onClick={() => setTheme(key)}
+                layoutId="theme-highlight"
+                className="px-3 py-1.5 text-sm"
+              >
+                {key === "light" ? "Светлая" : key === "dark" ? "Тёмная" : "Системная"}
+              </SelectCard>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="mb-2 text-sm font-medium text-ink">Цвет акцента</div>
+          <p className="mb-3 text-xs text-muted">Влияет на кнопки, подсветку выбора и активный пункт меню.</p>
+          <div className="flex flex-wrap gap-4">
+            {ACCENT_PRESETS.map((preset) => {
+              const active = accent === preset.key;
+              return (
+                <button
+                  key={preset.key}
+                  onClick={() => setAccent(preset.key)}
+                  title={preset.label}
+                  className="flex flex-col items-center gap-1.5"
+                >
+                  <span className="relative flex h-10 w-10 items-center justify-center rounded-full">
+                    {active && (
+                      <motion.span
+                        layoutId="accent-ring"
+                        transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                        className="absolute inset-0 rounded-full ring-2 ring-offset-2 ring-offset-card"
+                        style={{ ["--tw-ring-color" as string]: accentSwatch(preset, resolvedDark) }}
+                      />
+                    )}
+                    <span
+                      className="h-7 w-7 rounded-full border border-line"
+                      style={{ backgroundColor: accentSwatch(preset, resolvedDark) }}
+                    />
+                  </span>
+                  <span className={`text-[11px] ${active ? "text-ink" : "text-muted"}`}>{preset.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 

@@ -7,19 +7,24 @@ interface Props extends HTMLMotionProps<"button"> {
 }
 
 const STYLES: Record<Variant, string> = {
-  primary: "bg-teal text-white hover:bg-teal-dark hover:shadow-md disabled:bg-line disabled:text-muted disabled:shadow-none",
-  secondary: "border border-line bg-card text-ink hover:border-teal hover:text-teal disabled:opacity-50",
+  primary:
+    "bg-gradient-to-b from-teal to-teal-dark text-white shadow-sm shadow-teal/20 " +
+    "hover:shadow-lg hover:shadow-teal/25 " +
+    "disabled:bg-none disabled:bg-line disabled:text-muted disabled:shadow-none",
+  secondary:
+    "border border-line bg-card text-ink hover:border-teal hover:text-teal hover:shadow-sm " +
+    "disabled:opacity-50 disabled:shadow-none",
   ghost: "text-teal hover:text-teal-dark disabled:opacity-40",
 };
 
 export default function Button({ variant = "primary", className = "", disabled, children, ...rest }: Props) {
   return (
     <motion.button
-      whileTap={disabled ? {} : { scale: 0.97 }}
+      whileTap={disabled ? {} : { scale: 0.96, y: 1 }}
       whileHover={disabled ? {} : { y: -1 }}
-      transition={{ duration: 0.15 }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
       disabled={disabled}
-      className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${STYLES[variant]} ${className}`}
+      className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-[colors,box-shadow] duration-150 ${STYLES[variant]} ${className}`}
       {...rest}
     >
       {children}

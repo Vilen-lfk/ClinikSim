@@ -5,6 +5,7 @@ import { api } from "../api/client";
 import Button from "../components/Button";
 import ErrorBanner from "../components/ErrorBanner";
 import { SkeletonScenarios } from "../components/Skeleton";
+import SelectCard from "../components/SelectCard";
 
 const SPECIALTIES = [
   { key: "therapy", label: "Терапия", icon: "🩺" },
@@ -62,16 +63,16 @@ export default function NewSimulationPage() {
         <h2 className="font-serif text-lg font-medium text-ink">Специальность</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {SPECIALTIES.map((s) => (
-            <button
+            <SelectCard
               key={s.key}
+              active={specialty === s.key}
               onClick={() => setSpecialty(s.key)}
-              className={`rounded-lg border bg-card p-4 text-center transition-colors ${
-                specialty === s.key ? "border-teal shadow-md" : "border-line hover:border-teal/50"
-              }`}
+              layoutId="specialty-highlight"
+              className="text-center"
             >
               <div className="mb-1 text-2xl">{s.icon}</div>
-              <div className="text-sm font-medium text-ink">{s.label}</div>
-            </button>
+              <div className="text-sm font-medium">{s.label}</div>
+            </SelectCard>
           ))}
         </div>
       </section>
@@ -80,15 +81,15 @@ export default function NewSimulationPage() {
         <h2 className="font-serif text-lg font-medium text-ink">Сложность</h2>
         <div className="grid grid-cols-3 gap-3">
           {DIFFICULTIES.map((d) => (
-            <button
+            <SelectCard
               key={d.key}
+              active={difficulty === d.key}
               onClick={() => setDifficulty(d.key)}
-              className={`rounded-lg border bg-card p-4 text-center transition-colors ${
-                difficulty === d.key ? "border-teal shadow-md" : "border-line hover:border-teal/50"
-              }`}
+              layoutId="difficulty-highlight"
+              className="text-center"
             >
-              <div className="text-sm font-medium text-ink">{d.label}</div>
-            </button>
+              <div className="text-sm font-medium">{d.label}</div>
+            </SelectCard>
           ))}
         </div>
       </section>
@@ -97,16 +98,15 @@ export default function NewSimulationPage() {
         <h2 className="font-serif text-lg font-medium text-ink">Режим</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {MODES.map((m) => (
-            <button
+            <SelectCard
               key={m.key}
+              active={mode === m.key}
               onClick={() => setMode(m.key)}
-              className={`rounded-lg border bg-card p-4 text-left transition-colors ${
-                mode === m.key ? "border-teal shadow-md" : "border-line hover:border-teal/50"
-              }`}
+              layoutId="mode-highlight"
             >
-              <div className="text-sm font-medium text-ink">{m.label}</div>
+              <div className="text-sm font-medium">{m.label}</div>
               <p className="mt-1 text-xs text-muted">{m.description}</p>
-            </button>
+            </SelectCard>
           ))}
         </div>
       </section>
