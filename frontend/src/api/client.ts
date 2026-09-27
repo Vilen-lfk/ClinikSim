@@ -28,12 +28,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
   });
   if (res.status === 401) {
-    // Токен истёк или недействителен — очищаем локальную сессию
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_user");
     setAuthToken(null);
   }
   if (!res.ok) throw new Error(await extractError(res));
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
@@ -45,7 +45,7 @@ export const api = {
     }),
   login: (username: string, password: string) =>
     request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) }),
-
+  deleteSession: (id: number) => request<void>(`/sessions/${id}`, { method: "DELETE" }),
   getScenarios: () => request<ScenarioListItem[]>("/scenarios"),
   getScenario: (id: number) => request<Scenario>(`/scenarios/${id}`),
   createSession: (scenario_id: number) =>

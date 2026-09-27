@@ -92,3 +92,13 @@ async def finish_session(
     db.commit()
     db.refresh(sim)
     return _to_out(sim)
+
+@router.delete("/{session_id}", status_code=204)
+def delete_session(
+    session_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    sim = _get_owned_or_404(db, session_id, current_user)
+    if sim.status != "active":
+        raise HTTPException(409, "Можно удалить только незавершённую сессию")
+    db.delete(sim)  # сообщения удалятся каскадно (cascade="all, delete-orphan" в модели)
+    db.commit()

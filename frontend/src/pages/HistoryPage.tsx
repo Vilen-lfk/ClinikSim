@@ -1,18 +1,36 @@
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import Button from "../components/Button";
-import { useAuth } from "../context/AuthContext";
+import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import { SkeletonRows } from "../components/Skeleton";
-import EmptyState from "../components/EmptyState";
-import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 export default function HistoryPage() {
   const { user } = useAuth();
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
 
   const history = useQuery({ queryKey: ["history"], queryFn: api.getHistory, staleTime: 0 });
   const stats = useQuery({ queryKey: ["stats"], queryFn: api.getStats, staleTime: 0 });
+
+  const deleteSession = useMutation({
+    mutationFn: (id: number) => api.deleteSession(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["history"] });
+      showToast("Сессия удалена");
+    },
+    onError: (e) => showToast((e as Error).message, "error"),
+  });
+
+  const handleDelete = (id: number, title: string) => {
+    if (window.confirm(`Удалить незавершённую сессию «${title}»? Это действие нельзя отменить.`)) {
+      deleteSession.mutate(id);
+    }
+  };
 
   const finished = (history.data ?? []).filter((s) => s.status === "finished" && s.score !== null);
   const avg = finished.length ? finished.reduce((a, s) => a + (s.score ?? 0), 0) / finished.length : 0;
@@ -28,6 +46,7 @@ export default function HistoryPage() {
       </header>
 
       {history.error && <ErrorBanner message={(history.error as Error).message} />}
+
       <p className="text-sm text-muted">Студент: {user?.full_name || user?.username}</p>
 
       <motion.section
@@ -44,7 +63,7 @@ export default function HistoryPage() {
           <motion.div
             key={label}
             variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}
-            className="rounded-xl border border-line bg-card p-3"
+            className="rounded-lg border border-line bg-card p-3"
           >
             <div className="font-mono text-2xl font-semibold text-ink">{value}</div>
             <div className="text-xs text-muted">{label}</div>
@@ -67,48 +86,50 @@ export default function HistoryPage() {
         />
       ) : (
         <section className="overflow-x-auto rounded-xl border border-line bg-card">
-          {/* ...существующая таблица без изменений... */}
+          <table className="w-full text-sm">
+            <thead className="bg-paper text-left text-muted">
+              <tr>
+                <th className="p-3 font-medium">Дата</th>
+                <th className="p-3 font-medium">Сценарий</th>
+                <th className="p-3 font-medium">Ваш диагноз</th>
+                <th className="p-3 font-medium">Балл</th>
+                <th className="p-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {(history.data ?? []).map((s) => (
+                <tr key={s.id} className="border-t border-line">
+                  <td className="p-3 whitespace-nowrap font-mono text-xs text-muted">
+                    {new Date(s.created_at).toLocaleString("ru-RU")}
+                  </td>
+                  <td className="p-3 text-ink">{s.scenario_title}</td>
+                  <td className="p-3 text-ink">{s.final_diagnosis ?? "—"}</td>
+                  <td className="p-3 font-mono font-medium text-ink">{s.score ?? "—"}</td>
+                  <td className="p-3">
+                    <div className="flex items-center justify-end gap-3">
+                      <Link to={s.status === "finished" ? `/results/${s.id}` : `/simulation/${s.id}`}>
+                        <Button variant="ghost" className="px-0 py-0">
+                          {s.status === "finished" ? "Результаты" : "Продолжить"}
+                        </Button>
+                      </Link>
+                      {s.status === "active" && (
+                        <button
+                          onClick={() => handleDelete(s.id, s.scenario_title)}
+                          disabled={deleteSession.isPending}
+                          title="Удалить незавершённую сессию"
+                          className="text-clay hover:text-clay-dark disabled:opacity-40"
+                        >
+                          🗑
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
       )}
-      <section className="overflow-x-auto rounded-xl border border-line bg-card">
-        <table className="w-full text-sm">
-          <thead className="bg-paper text-left text-muted">
-            <tr>
-              <th className="p-3 font-medium">Дата</th>
-              <th className="p-3 font-medium">Сценарий</th>
-              <th className="p-3 font-medium">Ваш диагноз</th>
-              <th className="p-3 font-medium">Балл</th>
-              <th className="p-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {(history.data ?? []).map((s) => (
-              <tr key={s.id} className="border-t border-line">
-                <td className="p-3 whitespace-nowrap font-mono text-xs text-muted">
-                  {new Date(s.created_at).toLocaleString("ru-RU")}
-                </td>
-                <td className="p-3 text-ink">{s.scenario_title}</td>
-                <td className="p-3 text-ink">{s.final_diagnosis ?? "—"}</td>
-                <td className="p-3 font-mono font-medium text-ink">{s.score ?? "—"}</td>
-                <td className="p-3">
-                  <Link to={s.status === "finished" ? `/results/${s.id}` : `/simulation/${s.id}`}>
-                    <Button variant="ghost" className="px-0 py-0">
-                      {s.status === "finished" ? "Результаты" : "Продолжить"}
-                    </Button>
-                  </Link>
-                </td>
-              </tr>
-            ))}
-            {history.data?.length === 0 && (
-              <tr>
-                <td colSpan={5} className="p-4 text-center text-muted">
-                  Попыток пока нет
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </section>
 
       <section className="space-y-2">
         <h2 className="font-serif text-lg font-medium text-ink">Статистика по сценариям (все студенты)</h2>

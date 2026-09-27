@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import Button from "../components/Button";
 import ErrorBanner from "../components/ErrorBanner";
-import PulseLine from "../components/PulseLine";
 import { useAuth } from "../context/AuthContext";
 
 export default function RegisterPage() {
@@ -36,14 +35,9 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout>
-      <div className="space-y-6">
-        <div className="md:hidden">
-          <h1 className="font-serif text-2xl font-medium text-ink">Регистрация</h1>
-          <PulseLine size="hero" className="mt-2 max-w-[200px]" />
-        </div>
-        <h1 className="hidden font-serif text-2xl font-medium text-ink md:block">Регистрация</h1>
-
-        <form onSubmit={handleSubmit} className="space-y-3 rounded-xl border border-line bg-card p-4">
+      <div className="space-y-5">
+        <h2 className="font-serif text-2xl font-medium text-ink">Регистрация</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="mb-1 block text-sm font-medium text-ink">Логин</label>
             <input
