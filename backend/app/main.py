@@ -8,7 +8,7 @@ from app import models  # noqa: F401  (регистрирует модели в 
 from app.config import settings
 from app.database import Base, engine
 from app.routers import chat, scenarios, sessions
-
+from app.routers import auth, chat, scenarios, sessions, stats, teacher
 from app.routers import auth, chat, scenarios, sessions, stats
 
 @asynccontextmanager
@@ -29,7 +29,7 @@ app.add_middleware(
 app.include_router(scenarios.router)
 app.include_router(sessions.router)
 app.include_router(chat.router)
-
+app.include_router(teacher.router)
 app.include_router(stats.router)
 app.include_router(auth.router)
 

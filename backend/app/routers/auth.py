@@ -14,6 +14,7 @@ from app.schemas import (
     UserOut,
 )
 from app.services.auth import create_access_token, hash_password, verify_password
+from app.config import settings
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -22,10 +23,16 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     if db.scalar(select(User).where(User.username == payload.username)):
         raise HTTPException(409, "Такой логин уже занят")
+
+    if payload.role == "teacher":
+        if not payload.invite_code or payload.invite_code != settings.teacher_invite_code:
+            raise HTTPException(403, "Неверный ключ авторизации преподавателя")
+
     user = User(
         username=payload.username,
         password_hash=hash_password(payload.password),
         full_name=payload.full_name,
+        role=payload.role,
     )
     db.add(user)
     db.commit()

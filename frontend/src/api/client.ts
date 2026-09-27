@@ -1,4 +1,7 @@
-import type { AuthResponse, AuthUser, Scenario, ScenarioListItem, ScenarioStats, Session, SessionListItem } from "../types";
+import type {
+  AuthResponse, AuthUser, Scenario, ScenarioAdmin, ScenarioInput, ScenarioListItem,
+  ScenarioStats, Session, SessionListItem, TeacherSessionListItem, TeacherStudentSummary,
+} from "../types";
 
 const BASE = "/api";
 
@@ -38,10 +41,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  register: (username: string, password: string, full_name?: string) =>
+  register: (username: string, password: string, role: "student" | "teacher", fullName?: string, inviteCode?: string) =>
     request<AuthResponse>("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ username, password, full_name: full_name || null }),
+      body: JSON.stringify({ username, password, full_name: fullName || null, role, invite_code: inviteCode || null }),
     }),
   login: (username: string, password: string) =>
     request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) }),
@@ -63,6 +66,20 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ current_password, new_password }),
     }),
+      // Куратор
+  getTeacherStudents: () => request<TeacherStudentSummary[]>("/teacher/students"),
+  getTeacherStudentSessions: (userId: number) =>
+    request<TeacherSessionListItem[]>(`/teacher/students/${userId}/sessions`),
+  getTeacherSession: (id: number) => request<Session>(`/teacher/sessions/${id}`),
+
+  // Управление сценариями
+  getScenariosAdmin: () => request<ScenarioAdmin[]>("/teacher/scenarios"),
+  getScenarioAdmin: (id: number) => request<ScenarioAdmin>(`/scenarios/${id}/admin`),
+  createScenario: (data: ScenarioInput) =>
+    request<ScenarioAdmin>("/scenarios", { method: "POST", body: JSON.stringify(data) }),
+  updateScenario: (id: number, data: Partial<ScenarioInput>) =>
+    request<ScenarioAdmin>(`/scenarios/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+  deleteScenario: (id: number) => request<void>(`/scenarios/${id}`, { method: "DELETE" }),
 };
 
 export async function streamPatientReply(

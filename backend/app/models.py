@@ -19,6 +19,7 @@ class User(Base):
     full_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     specialty: Mapped[str | None] = mapped_column(String(100), nullable=True)
     course: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    role: Mapped[str] = mapped_column(String(20), default="student")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     sessions: Mapped[list["SimSession"]] = relationship(back_populates="user")

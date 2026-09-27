@@ -2,7 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PulseLine from "./PulseLine";
 
-const NAV = [
+const BASE_NAV = [
   { to: "/", label: "Главная", icon: "" },
   { to: "/new-simulation", label: "Новая симуляция", icon: "" },
   { to: "/history", label: "История", icon: "" },
@@ -10,9 +10,11 @@ const NAV = [
   { to: "/profile", label: "Мой профиль", icon: "" },
 ];
 
+const TEACHER_NAV_ITEM = { to: "/teacher/dashboard", label: "Панель куратора", icon: "" };
+
 export default function Layout() {
   const { user, logout } = useAuth();
-
+  const NAV = user?.role === "teacher" ? [...BASE_NAV, TEACHER_NAV_ITEM] : BASE_NAV;
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
       isActive

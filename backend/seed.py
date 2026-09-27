@@ -210,5 +210,14 @@ def main(reset: bool = False) -> None:
             ))
             db.commit()
             print("Создан демо-пользователь: demo / demo1234")
+        if not db.scalar(select(User.id).where(User.username == "teacher")):
+            db.add(User(
+                username="teacher",
+                password_hash=hash_password("teacher1234"),
+                full_name="Куратор ординатуры",
+                role="teacher",
+            ))
+            db.commit()
+            print("Создан куратор: teacher / teacher1234")
 if __name__ == "__main__":
     main(reset="--reset" in sys.argv)

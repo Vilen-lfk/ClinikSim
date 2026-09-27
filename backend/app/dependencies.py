@@ -14,7 +14,6 @@ def get_current_user(
     creds: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> User:
-    """Достаёт текущего пользователя из заголовка Authorization: Bearer <token>."""
     unauthorized = HTTPException(status.HTTP_401_UNAUTHORIZED, "Требуется авторизация")
     if not creds:
         raise unauthorized
@@ -27,3 +26,10 @@ def get_current_user(
     if not user:
         raise unauthorized
     return user
+
+
+def get_current_teacher(current_user: User = Depends(get_current_user)) -> User:
+    """Дополнительная проверка роли поверх обычной авторизации."""
+    if current_user.role != "teacher":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Доступно только преподавателям")
+    return current_user

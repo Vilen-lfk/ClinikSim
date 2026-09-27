@@ -13,6 +13,12 @@ import RegisterPage from "./pages/RegisterPage";
 import ResultsPage from "./pages/ResultsPage";
 import ReviewPage from "./pages/ReviewPage";
 import SimulationPage from "./pages/SimulationPage";
+import ScenarioFormPage from "./pages/ScenarioFormPage";
+import ScenarioManagerPage from "./pages/ScenarioManagerPage";
+import TeacherDashboardPage from "./pages/TeacherDashboardPage";
+import TeacherRoute from "./components/TeacherRoute";
+import TeacherSessionDetailPage from "./pages/TeacherSessionDetailPage";
+import TeacherStudentSessionsPage from "./pages/TeacherStudentSessionsPage";
 
 function PageTransition({ children }: { children: ReactNode }) {
   return (
@@ -45,6 +51,14 @@ export default function App() {
             <Route path="/history" element={<PageTransition><HistoryPage /></PageTransition>} />
             <Route path="/knowledge" element={<PageTransition><KnowledgeBasePage /></PageTransition>} />
             <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
+            <Route element={<TeacherRoute />}>
+              <Route path="/teacher/dashboard" element={<PageTransition><TeacherDashboardPage /></PageTransition>} />
+              <Route path="/teacher/students/:id" element={<PageTransition><TeacherStudentSessionsPage /></PageTransition>} />
+              <Route path="/teacher/sessions/:id" element={<PageTransition><TeacherSessionDetailPage /></PageTransition>} />
+              <Route path="/teacher/scenarios" element={<PageTransition><ScenarioManagerPage /></PageTransition>} />
+              <Route path="/teacher/scenarios/new" element={<PageTransition><ScenarioFormPage /></PageTransition>} />
+              <Route path="/teacher/scenarios/:id/edit" element={<PageTransition><ScenarioFormPage /></PageTransition>} />
+            </Route>
           </Route>
         </Route>
 

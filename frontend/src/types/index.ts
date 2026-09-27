@@ -44,6 +44,7 @@ export interface Evaluation {
 
 export interface Session {
   id: number;
+  user_id?: number;
   student_id: string;
   status: "active" | "finished";
   final_diagnosis: string | null;
@@ -95,3 +96,63 @@ export interface SessionListItem {
   final_diagnosis: string | null;
   created_at: string;
 }
+
+export interface AuthUser {
+  username: string;
+  full_name: string | null;
+  specialty?: string | null;
+  course?: string | null;
+  role?: string;
+  created_at?: string;
+}
+
+export interface TeacherStudentSummary {
+  id: number;
+  username: string;
+  full_name: string | null;
+  specialty: string | null;
+  course: string | null;
+  attempts: number;
+  finished: number;
+  avg_score: number | null;
+}
+
+export interface TeacherSessionListItem {
+  id: number;
+  student_username: string;
+  student_full_name: string | null;
+  scenario_title: string;
+  scenario_specialty: string;
+  status: "active" | "finished";
+  score: number | null;
+  final_diagnosis: string | null;
+  created_at: string;
+}
+
+export interface AnamnesisFacts {
+  complaints: string[];
+  hpi: string[];
+  life_history: string[];
+  risk_factors: string[];
+  negatives: string[];
+}
+
+export interface ScenarioAdmin {
+  id: number;
+  title: string;
+  specialty: string;
+  difficulty: string;
+  hidden_diagnosis: string;
+  patient_profile: {
+    name: string;
+    age: number;
+    gender: string;
+    occupation: string;
+    arrival_complaint: string;
+    speech_style?: string;
+  };
+  anamnesis_facts: AnamnesisFacts;
+  red_flags: string[];
+}
+
+export type ScenarioInput = Omit<ScenarioAdmin, "id">;

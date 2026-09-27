@@ -1,8 +1,10 @@
+import re
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+USERNAME_PATTERN = re.compile(r"^[a-zA-Z0-9_.-]+$")
 
 class ScenarioListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -62,6 +64,7 @@ class SessionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    user_id: int
     student_id: str
     status: str
     final_diagnosis: str | None = None
@@ -92,9 +95,27 @@ class ScenarioStats(BaseModel):
 class RegisterRequest(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    username: str = Field(min_length=3, max_length=50, pattern=r"^[a-zA-Z0-9_.-]+$")
+    username: str = Field(min_length=3, max_length=50)
     password: str = Field(min_length=6, max_length=100)
     full_name: str | None = Field(default=None, max_length=200)
+    role: str = Field(default="student")
+    invite_code: str | None = Field(default=None, max_length=200)
+
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, v: str) -> str:
+        if not USERNAME_PATTERN.match(v):
+            raise ValueError(
+                "Логин может содержать только латинские буквы, цифры, точку, дефис и подчёркивание"
+            )
+        return v
+
+    @field_validator("role")
+    @classmethod
+    def validate_role(cls, v: str) -> str:
+        if v not in {"student", "teacher"}:
+            raise ValueError("Роль должна быть 'student' или 'teacher'")
+        return v
 
 
 class LoginRequest(BaseModel):
@@ -132,3 +153,106 @@ class UpdateProfileRequest(BaseModel):
 class ChangePasswordRequest(BaseModel):
     current_password: str = Field(min_length=1, max_length=100)
     new_password: str = Field(min_length=6, max_length=100)
+
+class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    username: str
+    full_name: str | None = None
+    specialty: str | None = None
+    course: str | None = None
+    role: str
+    created_at: datetime    
+
+ALLOWED_SPECIALTIES = {"therapy", "cardiology", "neurology", "surgery"}
+ALLOWED_DIFFICULTIES = {"easy", "medium", "hard"}
+
+
+class ScenarioCreate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    title: str = Field(min_length=2, max_length=200)
+    specialty: str
+    difficulty: str
+    hidden_diagnosis: str = Field(min_length=2, max_length=300)
+    patient_profile: dict[str, Any]
+    anamnesis_facts: dict[str, Any]
+    red_flags: list[str] = []
+
+    @field_validator("specialty")
+    @classmethod
+    def check_specialty(cls, v: str) -> str:
+        if v not in ALLOWED_SPECIALTIES:
+            raise ValueError(f"Специальность должна быть одной из: {', '.join(sorted(ALLOWED_SPECIALTIES))}")
+        return v
+
+    @field_validator("difficulty")
+    @classmethod
+    def check_difficulty(cls, v: str) -> str:
+        if v not in ALLOWED_DIFFICULTIES:
+            raise ValueError(f"Сложность должна быть одной из: {', '.join(sorted(ALLOWED_DIFFICULTIES))}")
+        return v
+
+
+class ScenarioUpdate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    title: str | None = Field(default=None, min_length=2, max_length=200)
+    specialty: str | None = None
+    difficulty: str | None = None
+    hidden_diagnosis: str | None = Field(default=None, min_length=2, max_length=300)
+    patient_profile: dict[str, Any] | None = None
+    anamnesis_facts: dict[str, Any] | None = None
+    red_flags: list[str] | None = None
+
+    @field_validator("specialty")
+    @classmethod
+    def check_specialty(cls, v: str | None) -> str | None:
+        if v is not None and v not in ALLOWED_SPECIALTIES:
+            raise ValueError(f"Специальность должна быть одной из: {', '.join(sorted(ALLOWED_SPECIALTIES))}")
+        return v
+
+    @field_validator("difficulty")
+    @classmethod
+    def check_difficulty(cls, v: str | None) -> str | None:
+        if v is not None and v not in ALLOWED_DIFFICULTIES:
+            raise ValueError(f"Сложность должна быть одной из: {', '.join(sorted(ALLOWED_DIFFICULTIES))}")
+        return v
+
+
+class ScenarioAdminOut(BaseModel):
+    """Полные данные сценария, включая скрытые от студента поля. Только для куратора."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    title: str
+    specialty: str
+    difficulty: str
+    hidden_diagnosis: str
+    patient_profile: dict[str, Any]
+    anamnesis_facts: dict[str, Any]
+    red_flags: list[str]
+
+
+class StudentSummary(BaseModel):
+    id: int
+    username: str
+    full_name: str | None = None
+    specialty: str | None = None
+    course: str | None = None
+    attempts: int
+    finished: int
+    avg_score: float | None = None
+
+
+class TeacherSessionListItem(BaseModel):
+    id: int
+    student_username: str
+    student_full_name: str | None = None
+    scenario_title: str
+    scenario_specialty: str
+    status: str
+    score: float | None = None
+    final_diagnosis: str | None = None
+    created_at: datetime

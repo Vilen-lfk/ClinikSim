@@ -7,8 +7,7 @@ interface AuthContextValue {
   token: string | null;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string, fullName?: string) => Promise<void>;
-  logout: () => void;
+  register: (username: string, password: string, role: "student" | "teacher", fullName?: string, inviteCode?: string) => Promise<void>;  logout: () => void;
   updateProfile: (data: Partial<{ full_name: string; specialty: string; course: string }>) => Promise<void>;
 }
 
@@ -51,8 +50,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(await api.getMe());
   };
 
-  const register = async (username: string, password: string, fullName?: string) => {
-    const res = await api.register(username, password, fullName);
+  const register = async (
+    username: string,
+    password: string,
+    role: "student" | "teacher",
+    fullName?: string,
+    inviteCode?: string,
+  ) => {
+    const res = await api.register(username, password, role, fullName, inviteCode);
     localStorage.setItem(TOKEN_KEY, res.access_token);
     setAuthToken(res.access_token);
     setToken(res.access_token);
