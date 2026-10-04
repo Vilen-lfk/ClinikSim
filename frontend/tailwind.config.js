@@ -22,9 +22,16 @@ export default {
         gold: "rgb(var(--color-gold) / <alpha-value>)",
       },
       fontFamily: {
-        serif: ['"Lora"', "Georgia", "serif"],
+        // Ключ "serif" сохранён по всему проекту ради className="font-serif" на заголовках,
+        // но теперь указывает на геометрический гротеск без засечек — не на классическую антикву.
+        serif: ['"Manrope"', '"Inter"', "system-ui", "sans-serif"],
         sans: ['"Inter"', "system-ui", "sans-serif"],
         mono: ['"IBM Plex Mono"', "monospace"],
+      },
+      boxShadow: {
+        glow: "0 8px 28px -6px rgb(var(--color-teal) / 0.5)",
+        "glow-lg": "0 16px 40px -8px rgb(var(--color-teal) / 0.55)",
+        "glow-ring": "0 0 0 1px rgb(var(--color-teal) / 0.25), 0 8px 24px -8px rgb(var(--color-teal) / 0.4)",
       },
       keyframes: {
         draw: { "0%": { strokeDashoffset: 900 }, "100%": { strokeDashoffset: 0 } },

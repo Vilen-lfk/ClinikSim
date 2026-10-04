@@ -125,7 +125,10 @@ export default function PulseLine({ size = "hero", active = false, className = "
         strokeLinejoin="round"
         strokeDasharray={length ?? undefined}
         strokeDashoffset={length ?? undefined}
-        style={{ transition: "none" }}
+        style={{
+          transition: "none",
+          filter: isHero ? "drop-shadow(0 0 6px rgb(var(--color-teal) / 0.65))" : undefined,
+        }}
       />
     </svg>
   );

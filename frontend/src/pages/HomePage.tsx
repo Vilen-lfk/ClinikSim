@@ -1,10 +1,12 @@
+import { Activity, Brain, Dna } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import Button from "../components/Button";
-import PulseLine from "../components/PulseLine";
-import { useAuth } from "../context/AuthContext";
 import OnboardingTour from "../components/OnboardingTour";
+import PulseLine from "../components/PulseLine";
+import StatCard from "../components/StatCard";
+import { useAuth } from "../context/AuthContext";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -18,9 +20,10 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">
       <OnboardingTour />
+
       <header className="space-y-3">
         <div>
-          <h1 className="font-serif text-3xl font-medium text-ink">
+          <h1 className="font-serif text-3xl font-extrabold tracking-tight text-ink">
             Здравствуйте, {user?.full_name || user?.username}
           </h1>
           <p className="mt-1 max-w-md text-muted">
@@ -30,22 +33,15 @@ export default function HomePage() {
         <PulseLine size="hero" className="max-w-sm" />
       </header>
 
-      <section className="grid grid-cols-3 gap-3">
-        {[
-          ["Пройдено сценариев", finished.length],
-          ["Средний балл", avg.toFixed(1)],
-          ["В процессе", inProgress.length],
-        ].map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-line bg-card p-3 text-center">
-            <div className="font-mono text-2xl font-semibold text-ink">{value}</div>
-            <div className="text-xs text-muted">{label}</div>
-          </div>
-        ))}
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard icon={Activity} value={finished.length} label="Сценариев пройдено" delay={0} />
+        <StatCard icon={Brain} value={avg.toFixed(1)} label="Средний балл" delay={0.06} />
+        <StatCard icon={Dna} value={inProgress.length} label="В процессе" delay={0.12} />
       </section>
 
       {inProgress.length > 0 && (
-        <section className="rounded-xl border border-gold/40 bg-card p-4">
-          <h2 className="mb-2 font-serif text-lg font-medium text-ink">Незавершённые сессии</h2>
+        <section className="rounded-2xl border border-gold/40 bg-card p-4 shadow-glow-ring">
+          <h2 className="mb-2 font-serif text-lg font-bold text-ink">Незавершённые сессии</h2>
           <ul className="space-y-2 text-sm">
             {inProgress.map((s) => (
               <li key={s.id} className="flex items-center justify-between">
@@ -60,8 +56,7 @@ export default function HomePage() {
       )}
 
       <Link to="/new-simulation">
-
-        <Button className="px-6 py-3">Начать симуляцию</Button>
+        <Button className="px-6 py-3 text-base">Начать симуляцию</Button>
       </Link>
     </div>
   );

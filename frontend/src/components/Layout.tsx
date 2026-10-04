@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { motion } from "framer-motion";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PulseLine from "./PulseLine";
 
@@ -14,85 +15,86 @@ const TEACHER_NAV_ITEM = { to: "/teacher/dashboard", label: "Панель кур
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const location = useLocation();
+
   const NAV = user?.role === "teacher" ? [...BASE_NAV, TEACHER_NAV_ITEM] : BASE_NAV;
-  const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-      isActive
-        ? "bg-teal-light text-teal-dark font-medium"
-        : "text-muted hover:bg-paper hover:text-ink"
-    }`;
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <div className="flex min-h-screen">
-        
-        {/* Боковое меню */}
-        <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-card p-4 md:flex print:hidden">
-          <div className="mb-6 px-1 font-serif text-lg font-medium text-ink">
-            ClinicSim
-          </div>
+    <div className="flex min-h-screen">
+      <aside className="glass-panel sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line/60 p-4 md:flex print:hidden">
+        <div className="mb-6 flex items-center gap-2 px-1">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-teal to-teal-dark text-xs font-bold text-white shadow-glow">
+            C
+          </span>
+          <span className="font-serif text-lg font-bold tracking-tight text-ink">ClinicSim</span>
+        </div>
 
-          <nav className="flex-1 space-y-1">
-            {NAV.map((item) => (
+        <nav className="flex-1 space-y-1">
+          {NAV.map((item) => {
+            const active = location.pathname === item.to;
+            return (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end
-                className={linkClass}
+                className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors duration-150 ${
+                  active ? "font-semibold text-teal-dark" : "text-muted hover:text-ink"
+                }`}
               >
-                <span aria-hidden="true">{item.icon}</span>
+                {active && (
+                  <motion.span
+                    layoutId="nav-highlight-desktop"
+                    transition={{ type: "spring", stiffness: 480, damping: 34 }}
+                    className="absolute inset-0 -z-10 rounded-xl bg-teal-light shadow-glow-ring"
+                  >
+                    <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-teal shadow-glow" />
+                  </motion.span>
+                )}
+                <span aria-hidden="true" className="text-base">{item.icon}</span>
                 {item.label}
               </NavLink>
-            ))}
-          </nav>
+            );
+          })}
+        </nav>
 
-          <div className="border-t border-line pt-3">
-            <PulseLine
-              size="hero"
-              className="mb-3 max-w-[140px] opacity-70"
-            />
+        <div className="border-t border-line/60 pt-3">
+          <PulseLine size="hero" className="mb-3 max-w-[140px] opacity-80" />
+          <div className="mb-2 truncate text-sm font-medium text-ink">{user?.full_name || user?.username}</div>
+          <button onClick={logout} className="text-sm text-clay hover:text-clay-dark">
+            Выйти
+          </button>
+        </div>
+      </aside>
 
-            <div className="mb-2 truncate text-sm text-muted">
-              {user?.full_name || user?.username}
-            </div>
+      <div className="flex-1 pb-16 md:pb-0">
+        <Outlet />
+      </div>
 
-            <button
-              onClick={logout}
-              className="text-sm text-clay hover:text-clay-dark"
-            >
-              Выйти
-            </button>
-          </div>
-        </aside>
-
-        {/* Основной контент */}
-        <main className="min-w-0 flex-1 pb-16 md:pb-0 bg-transparent">
-          <Outlet />
-        </main>
-
-        {/* Мобильная навигация */}
-        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-between border-t border-line bg-card px-2 py-1.5 md:hidden print:hidden">
-          {NAV.map((item) => (
+      <nav className="glass-panel fixed inset-x-0 bottom-0 z-10 flex justify-between border-t border-line/60 px-2 py-1.5 md:hidden print:hidden">
+        {NAV.map((item) => {
+          const active = location.pathname === item.to;
+          return (
             <NavLink
               key={item.to}
               to={item.to}
               end
-              className={({ isActive }) =>
-                `flex flex-1 flex-col items-center gap-0.5 rounded-lg py-1 text-[11px] ${
-                  isActive ? "text-teal" : "text-muted"
-                }`
-              }
+              className="relative flex flex-1 flex-col items-center gap-0.5 rounded-lg py-1 text-[11px]"
             >
-              <span aria-hidden="true" className="text-base">
+              {active && (
+                <motion.span
+                  layoutId="nav-highlight-mobile"
+                  transition={{ type: "spring", stiffness: 480, damping: 34 }}
+                  className="absolute inset-0 -z-10 rounded-lg bg-teal-light"
+                />
+              )}
+              <span aria-hidden="true" className={`text-base ${active ? "" : "opacity-80"}`}>
                 {item.icon}
               </span>
-
-              {item.label.split(" ")[0]}
+              <span className={active ? "font-semibold text-teal-dark" : "text-muted"}>{item.label.split(" ")[0]}</span>
             </NavLink>
-          ))}
-        </nav>
-
-      </div>
+          );
+        })}
+      </nav>
     </div>
   );
 }
