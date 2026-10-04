@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -19,7 +19,6 @@ def _to_out(sim: SimSession) -> SessionOut:
 
 
 def _get_owned_or_404(db: Session, session_id: int, current_user: User) -> SimSession:
-    """Возвращает сессию, только если она принадлежит текущему пользователю."""
     sim = db.get(SimSession, session_id)
     if not sim or sim.user_id != current_user.id:
         raise HTTPException(404, "Сессия не найдена")
@@ -45,18 +44,37 @@ def list_sessions(current_user: User = Depends(get_current_user), db: Session = 
     ]
 
 
-@router.post("", response_model=SessionOut, status_code=201)
+@router.post("", response_model=SessionOut)
 def create_session(
-    payload: SessionCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
+    payload: SessionCreate,
+    response: Response,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     if not db.get(Scenario, payload.scenario_id):
         raise HTTPException(404, "Сценарий не найден")
+
+    # Если у пользователя уже есть незавершённая сессия по этому сценарию — продолжаем её.
+    existing = db.scalar(
+        select(SimSession)
+        .where(
+            SimSession.user_id == current_user.id,
+            SimSession.scenario_id == payload.scenario_id,
+            SimSession.status == "active",
+        )
+        .order_by(SimSession.id.desc())
+    )
+    if existing:
+        response.status_code = 200
+        return _to_out(existing)
+
     sim = SimSession(
         user_id=current_user.id, student_id=current_user.username, scenario_id=payload.scenario_id
     )
     db.add(sim)
     db.commit()
     db.refresh(sim)
+    response.status_code = 201
     return _to_out(sim)
 
 
@@ -93,6 +111,7 @@ async def finish_session(
     db.refresh(sim)
     return _to_out(sim)
 
+
 @router.delete("/{session_id}", status_code=204)
 def delete_session(
     session_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
@@ -100,5 +119,5 @@ def delete_session(
     sim = _get_owned_or_404(db, session_id, current_user)
     if sim.status != "active":
         raise HTTPException(409, "Можно удалить только незавершённую сессию")
-    db.delete(sim)  # сообщения удалятся каскадно (cascade="all, delete-orphan" в модели)
+    db.delete(sim)
     db.commit()

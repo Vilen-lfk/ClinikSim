@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import ErrorBanner from "../components/ErrorBanner";
 import { SkeletonScenarios } from "../components/Skeleton";
 import SelectCard from "../components/SelectCard";
+import { useToast } from "../context/ToastContext";
 
 const SPECIALTIES = [
   { key: "therapy", label: "Терапия", icon: "" },
@@ -27,6 +28,7 @@ const MODES = [
 
 export default function NewSimulationPage() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [specialty, setSpecialty] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<string | null>(null);
   const [mode, setMode] = useState<"training" | "exam">("training");
@@ -41,8 +43,10 @@ export default function NewSimulationPage() {
   const start = useMutation({
     mutationFn: () => api.createSession(match!.id),
     onSuccess: (session) => {
-      // Режим пока хранится только на клиенте и не влияет на подсказки в чате
       localStorage.setItem(`session_mode_${session.id}`, mode);
+      if (session.messages.length > 0) {
+        showToast("Продолжаем ранее начатую сессию по этому сценарию");
+      }
       navigate(`/simulation/${session.id}`);
     },
   });
