@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PulseLine from "./PulseLine";
+import Logo from "./Logo";
 
 const BASE_NAV = [
   { to: "/", label: "Главная", icon: "" },
@@ -23,9 +24,7 @@ export default function Layout() {
     <div className="flex min-h-screen">
       <aside className="glass-panel sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line/60 p-4 md:flex print:hidden">
         <div className="mb-6 flex items-center gap-2 px-1">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-teal to-teal-dark text-xs font-bold text-white shadow-glow">
-            C
-          </span>
+          <Logo />
           <span className="font-serif text-lg font-bold tracking-tight text-ink">ClinicSim</span>
         </div>
 
