@@ -49,7 +49,7 @@ export default function RegisterPage() {
           <label className="mb-2 block text-sm font-medium text-ink">Роль</label>
           <div className="grid grid-cols-2 gap-3">
             <SelectCard active={role === "student"} onClick={() => setRole("student")} layoutId="role-highlight" className="text-center">
-              <div className="text-sm font-medium">Студент</div>
+              <div className="text-sm font-medium">Студент-ординатор</div>
             </SelectCard>
             <SelectCard active={role === "teacher"} onClick={() => setRole("teacher")} layoutId="role-highlight" className="text-center">
               <div className="text-sm font-medium">Преподаватель</div>
