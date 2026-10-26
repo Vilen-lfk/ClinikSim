@@ -31,6 +31,8 @@ export default {
       boxShadow: {
         glow: "0 8px 28px -6px rgb(var(--color-teal) / 0.5)",
         "glow-lg": "0 16px 40px -8px rgb(var(--color-teal) / 0.55)",
+        btn: "inset 0 1px 0 rgb(255 255 255 / 0.25), 0 1px 2px rgb(0 0 0 / 0.2), 0 6px 18px -8px rgb(var(--color-teal) / 0.7)",
+        "btn-hover": "inset 0 1px 0 rgb(255 255 255 / 0.3), 0 1px 2px rgb(0 0 0 / 0.2), 0 10px 26px -8px rgb(var(--color-teal) / 0.8)",
         "glow-ring": "0 0 0 1px rgb(var(--color-teal) / 0.25), 0 8px 24px -8px rgb(var(--color-teal) / 0.4)",
       },
       keyframes: {

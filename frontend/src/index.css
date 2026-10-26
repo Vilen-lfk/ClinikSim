@@ -102,6 +102,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1; /* под контентом: backdrop-filter у .glass-card создаёт свой контекст наложения */
   pointer-events: none;
   background:
     radial-gradient(circle at 0% 0%, rgb(var(--color-teal) / 0.14), transparent 55%),

@@ -15,7 +15,7 @@ export default function GlassCard({ children, className = "", delay = 0 }: Props
       transition={{ delay, duration: 0.35, ease: "easeOut" }}
       className={`glass-card rounded-2xl ${className}`}
     >
-      <div className="relative">{children}</div>
+      {children}
     </motion.div>
   );
 }

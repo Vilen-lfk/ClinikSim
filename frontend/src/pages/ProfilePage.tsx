@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import Button from "../components/Button";
 import DonutChart from "../components/DonutChart";
 import ErrorBanner from "../components/ErrorBanner";
+import { Check, KeyRound, Loader2, LogOut } from "lucide-react";
 import GlassCard from "../components/GlassCard";
 import SelectCard from "../components/SelectCard";
 import Sparkline from "../components/Sparkline";
@@ -181,6 +182,7 @@ export default function ProfilePage() {
             saveProfile.mutate();
           }}
           disabled={saveProfile.isPending}
+          icon={saveProfile.isPending ? <Loader2 className="animate-spin" /> : <Check />}
         >
           {saveProfile.isPending ? "Сохраняем…" : "Сохранить изменения"}
         </Button>
@@ -226,6 +228,7 @@ export default function ProfilePage() {
             savePassword.mutate();
           }}
           disabled={savePassword.isPending || !currentPassword || !newPassword}
+          icon={savePassword.isPending ? <Loader2 className="animate-spin" /> : <KeyRound />}
         >
           {savePassword.isPending ? "Обновляем…" : "Изменить пароль"}
         </Button>
@@ -246,7 +249,7 @@ export default function ProfilePage() {
           Учебные напоминания
           <input type="checkbox" checked={notifyReminders} onChange={(e) => setNotifyReminders(e.target.checked)} className="h-4 w-4 accent-teal" />
         </label>
-        <Button variant="secondary" onClick={saveNotifications}>
+        <Button variant="secondary" onClick={saveNotifications} icon={<Check />}>
           Сохранить изменения
         </Button>
       </GlassCard>
@@ -292,7 +295,7 @@ export default function ProfilePage() {
         </div>
       </GlassCard>
 
-      <Button variant="secondary" onClick={logout} className="text-clay">
+      <Button variant="secondary" onClick={logout} icon={<LogOut />} className="text-clay hover:border-clay/60 hover:bg-clay/10 hover:text-clay">
         Выйти из аккаунта
       </Button>
     </div>
