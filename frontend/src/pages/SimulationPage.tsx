@@ -80,7 +80,7 @@ export default function SimulationPage() {
   const p = session.scenario.patient_profile;
 
   return (
-    <div className="mx-auto flex h-screen max-w-4xl flex-col gap-3 p-4">
+    <div className="flex h-screen w-full flex-col gap-3 p-4 lg:px-10">
       <header className="flex items-start justify-between gap-4 rounded-xl border border-line bg-card p-4">
         <div>
           <div className="flex items-center gap-2">

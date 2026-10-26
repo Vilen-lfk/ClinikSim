@@ -37,7 +37,7 @@ export default function HistoryPage() {
   const best = finished.length ? Math.max(...finished.map((s) => s.score ?? 0)) : 0;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="w-full space-y-6 p-6 lg:px-10">
       <header className="flex items-center justify-between">
         <h1 className="font-serif text-2xl font-medium text-ink">Моя история</h1>
         <Link to="/" className="text-sm text-teal hover:text-teal-dark">

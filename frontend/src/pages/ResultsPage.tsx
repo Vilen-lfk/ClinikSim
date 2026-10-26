@@ -90,7 +90,7 @@ export default function ResultsPage() {
 
   return (
     
-    <div className="mx-auto max-w-3xl space-y-5 p-6">
+    <div className="w-full space-y-5 p-6 lg:px-10">
       
       {/* Всё внутри этого блока попадает в PDF; кнопки ниже — нет */}
       <motion.div ref={contentRef} variants={listVariants} initial="hidden" animate="show" className="space-y-5">

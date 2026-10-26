@@ -135,7 +135,7 @@ export default function KnowledgeBasePage() {
   }, [query, category]);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="w-full space-y-6 p-6 lg:px-10">
       <header>
         <h1 className="font-serif text-3xl font-extrabold tracking-tight text-ink">Медицинская база знаний</h1>
         <p className="mt-1 text-muted">Справочные материалы по симптомам, заболеваниям и сбору анамнеза</p>
@@ -172,7 +172,7 @@ export default function KnowledgeBasePage() {
 
       <p className="text-xs text-muted">{filtered.length} материалов</p>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {filtered.map((a) => (
           <div key={a.id} className="card-texture flex flex-col rounded-2xl border border-line bg-card p-4 shadow-glow-ring">
             <div className="mb-2 flex items-center gap-2">

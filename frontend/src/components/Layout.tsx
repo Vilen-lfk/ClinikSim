@@ -8,7 +8,7 @@ const BASE_NAV = [
   { to: "/", label: "Главная", icon: "" },
   { to: "/new-simulation", label: "Новая симуляция", icon: "" },
   { to: "/history", label: "История", icon: "" },
-  { to: "/knowledge", label: "База знаний", icon: "" },
+  { to: "/knowledge", label: "Теоретические ведомости", icon: "" },
   { to: "/profile", label: "Мой профиль", icon: "" },
 ];
 

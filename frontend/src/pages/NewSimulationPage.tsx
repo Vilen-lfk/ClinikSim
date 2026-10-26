@@ -1,18 +1,20 @@
+import { Brain, HeartPulse, Scissors, Stethoscope } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import Button from "../components/Button";
 import ErrorBanner from "../components/ErrorBanner";
-import { SkeletonScenarios } from "../components/Skeleton";
+import GlassCard from "../components/GlassCard";
 import SelectCard from "../components/SelectCard";
+import { SkeletonScenarios } from "../components/Skeleton";
 import { useToast } from "../context/ToastContext";
 
 const SPECIALTIES = [
-  { key: "therapy", label: "Терапия", icon: "" },
-  { key: "cardiology", label: "Кардиология", icon: "" },
-  { key: "neurology", label: "Неврология", icon: "" },
-  { key: "surgery", label: "Хирургия", icon: "" },
+  { key: "therapy", label: "Терапия", Icon: Stethoscope },
+  { key: "cardiology", label: "Кардиология", Icon: HeartPulse },
+  { key: "neurology", label: "Неврология", Icon: Brain },
+  { key: "surgery", label: "Хирургия", Icon: Scissors },
 ];
 
 const DIFFICULTIES = [
@@ -54,9 +56,9 @@ export default function NewSimulationPage() {
   const selectedDifficulty = DIFFICULTIES.find((d) => d.key === difficulty);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 p-6">
+    <div className="w-full space-y-8 p-6 lg:px-10">
       <header>
-        <h1 className="font-serif text-3xl font-medium text-ink">Новая симуляция</h1>
+        <h1 className="font-serif text-3xl font-extrabold tracking-tight text-ink">Новая симуляция</h1>
         <p className="mt-1 text-muted">Настройте параметры клинического сценария перед началом</p>
       </header>
 
@@ -64,7 +66,7 @@ export default function NewSimulationPage() {
       {scenarios.error && <ErrorBanner message={(scenarios.error as Error).message} />}
 
       <section className="space-y-3">
-        <h2 className="font-serif text-lg font-medium text-ink">Специальность</h2>
+        <h2 className="font-serif text-lg font-bold text-ink">Специальность</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {SPECIALTIES.map((s) => (
             <SelectCard
@@ -74,7 +76,9 @@ export default function NewSimulationPage() {
               layoutId="specialty-highlight"
               className="text-center"
             >
-              <div className="mb-1 text-2xl">{s.icon}</div>
+              <span className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-teal-light text-teal-dark">
+                <s.Icon size={18} strokeWidth={2.2} />
+              </span>
               <div className="text-sm font-medium">{s.label}</div>
             </SelectCard>
           ))}
@@ -82,7 +86,7 @@ export default function NewSimulationPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-serif text-lg font-medium text-ink">Сложность</h2>
+        <h2 className="font-serif text-lg font-bold text-ink">Сложность</h2>
         <div className="grid grid-cols-3 gap-3">
           {DIFFICULTIES.map((d) => (
             <SelectCard
@@ -99,15 +103,10 @@ export default function NewSimulationPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-serif text-lg font-medium text-ink">Режим</h2>
+        <h2 className="font-serif text-lg font-bold text-ink">Режим</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {MODES.map((m) => (
-            <SelectCard
-              key={m.key}
-              active={mode === m.key}
-              onClick={() => setMode(m.key)}
-              layoutId="mode-highlight"
-            >
+            <SelectCard key={m.key} active={mode === m.key} onClick={() => setMode(m.key)} layoutId="mode-highlight">
               <div className="text-sm font-medium">{m.label}</div>
               <p className="mt-1 text-xs text-muted">{m.description}</p>
             </SelectCard>
@@ -116,16 +115,16 @@ export default function NewSimulationPage() {
       </section>
 
       {specialty && difficulty && (
-        <div className="rounded-lg border border-line bg-card p-4 text-sm text-muted">
+        <GlassCard className="p-4 text-sm text-muted">
           {match
             ? `Предполагаемая продолжительность: ${selectedDifficulty?.minutes}`
             : "Сценариев с такими параметрами пока нет. Попробуйте другое сочетание специальности и сложности."}
-        </div>
+        </GlassCard>
       )}
 
       {start.error && <ErrorBanner message={(start.error as Error).message} />}
 
-      <Button onClick={() => start.mutate()} disabled={!match || start.isPending} className="px-6 py-3">
+      <Button onClick={() => start.mutate()} disabled={!match || start.isPending} className="px-6 py-3 text-base">
         {start.isPending ? "Запуск…" : "Начать симуляцию"}
       </Button>
     </div>

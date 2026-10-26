@@ -34,7 +34,7 @@ export default function HomePage() {
   const weakest = bySpecialty.length >= 2 ? bySpecialty.reduce((a, b) => (b.avg < a.avg ? b : a)) : null;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6">
+    <div className="w-full space-y-8 p-6 lg:px-10">
       <OnboardingTour />
 
       <header className="space-y-3">

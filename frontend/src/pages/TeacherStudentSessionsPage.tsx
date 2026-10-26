@@ -17,7 +17,7 @@ export default function TeacherStudentSessionsPage() {
   const studentName = sessions.data?.[0]?.student_full_name || sessions.data?.[0]?.student_username || "Студент";
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="w-full space-y-6 p-6 lg:px-10">
       <header className="flex items-center justify-between">
         <h1 className="font-serif text-2xl font-medium text-ink">{studentName}</h1>
         <Link to="/teacher/dashboard" className="text-sm text-teal hover:text-teal-dark">

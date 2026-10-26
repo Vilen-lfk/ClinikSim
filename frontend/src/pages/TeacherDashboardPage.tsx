@@ -10,7 +10,7 @@ export default function TeacherDashboardPage() {
   const students = useQuery({ queryKey: ["teacher-students"], queryFn: api.getTeacherStudents });
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="w-full space-y-6 p-6 lg:px-10">
       <header className="flex items-center justify-between">
         <div>
           <h1 className="font-serif text-3xl font-medium text-ink">Панель куратора</h1>
