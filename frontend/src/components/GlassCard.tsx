@@ -10,9 +10,9 @@ interface Props {
 export default function GlassCard({ children, className = "", delay = 0 }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.35, ease: "easeOut" }}
+      transition={{ delay, duration: 0.2, ease: "easeOut" }}
       className={`glass-card rounded-2xl ${className}`}
     >
       {children}

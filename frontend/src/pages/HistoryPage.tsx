@@ -52,7 +52,7 @@ export default function HistoryPage() {
       <motion.section
         initial="hidden"
         animate="show"
-        variants={{ show: { transition: { staggerChildren: 0.06 } } }}
+        variants={{ show: { transition: { staggerChildren: 0.03 } } }}
         className="grid grid-cols-3 gap-3 text-center"
       >
         {[

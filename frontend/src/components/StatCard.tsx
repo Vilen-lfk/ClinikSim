@@ -11,9 +11,9 @@ interface Props {
 export default function StatCard({ icon: Icon, value, label, delay = 0 }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.35, ease: "easeOut" }}
+      transition={{ delay, duration: 0.2, ease: "easeOut" }}
       className="relative overflow-hidden rounded-2xl border border-line bg-card p-5 shadow-glow-ring"
     >
       <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-teal-light text-teal-dark">

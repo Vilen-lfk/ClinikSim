@@ -108,7 +108,7 @@ export default function ProfilePage() {
           ["Лучший результат", best],
           ["Успешных, %", `${successRate}%`],
         ].map(([label, value], i) => (
-          <GlassCard key={label} delay={i * 0.04} className="p-3 text-center">
+          <GlassCard key={label} delay={i * 0.02} className="p-3 text-center">
             <div className="glass-number font-mono text-lg font-bold">{value}</div>
             <div className="text-xs text-muted">{label}</div>
           </GlassCard>

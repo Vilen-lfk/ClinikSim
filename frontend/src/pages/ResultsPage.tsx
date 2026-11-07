@@ -32,7 +32,7 @@ function scoreColor(pct: number) {
 
 const listVariants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.04 } },
 };
 const itemVariants = {
   hidden: { opacity: 0, y: 10 },
