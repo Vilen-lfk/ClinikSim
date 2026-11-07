@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import PulseLine from "./PulseLine";
+import Logo from "./Logo";
 
 const FEATURES = [
   "Ведите приём виртуальных пациентов в свободном диалоге",
@@ -12,8 +12,10 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="grid w-full max-w-3xl overflow-hidden rounded-xl border border-line bg-card shadow-sm md:grid-cols-2">
         <div className="flex flex-col justify-center border-b border-line p-8 md:border-b-0 md:border-r">
-          <PulseLine size="hero" className="mb-6 max-w-[180px]" />
-          <h1 className="font-serif text-2xl font-medium text-ink">ClinicSim</h1>
+          <div className="flex items-center gap-3">
+            <Logo size={40} />
+            <h1 className="font-serif text-2xl font-bold tracking-tight text-ink">ClinicSim</h1>
+          </div>
           <p className="mt-2 text-sm text-muted">
             Учебная платформа для отработки сбора анамнеза и постановки диагноза.
           </p>

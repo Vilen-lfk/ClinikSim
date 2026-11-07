@@ -1,29 +1,51 @@
 interface Props {
+  /** Высота знака в пикселях (ширина пропорциональна). */
   size?: number;
   className?: string;
 }
 
 /**
- * Однотонная иконка-кардиограмма — тот же знак, что и в favicon.
- * Красится через currentColor/фон на CSS-переменных темы, поэтому
- * автоматически меняет цвет при смене светлой/тёмной темы и акцента.
+ * Логотип «CS»: тёмная «C», бирюзовая «S» и линия ЭКГ поверх.
+ * Цвета берутся из CSS-переменных темы, поэтому знак сам подстраивается под светлую/тёмную тему.
  */
-export default function Logo({ size = 28, className = "" }: Props) {
+export default function Logo({ size = 32, className = "" }: Props) {
   return (
-    <span
-      className={`flex shrink-0 items-center justify-center rounded-lg border border-teal/25 bg-teal-light text-teal ${className}`}
-      style={{ width: size, height: size }}
+    <svg
+      viewBox="0 0 64 48"
+      height={size}
+      width={(size * 64) / 48}
+      fill="none"
       aria-hidden="true"
+      className={`shrink-0 ${className}`}
     >
-      <svg viewBox="0 0 32 32" width={size * 0.62} height={size * 0.62} fill="none">
-        <path
-          d="M2 16h6l2.5-7 4 14 3.5-11 2 4h10"
-          stroke="currentColor"
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
+      {/* C */}
+      <path
+        d="M29.5 13.5 A14.5 14.5 0 1 0 29.5 34.5"
+        stroke="rgb(var(--color-teal-dark))"
+        strokeWidth="8.5"
+      />
+      {/* S */}
+      <path
+        d="M51 13.5 A7 7 0 1 0 44 24 A7 7 0 1 1 37 34.5"
+        stroke="rgb(var(--color-teal))"
+        strokeWidth="7.5"
+      />
+      {/* Линия ЭКГ: подложка цвета фона отделяет её от букв */}
+      <path
+        d="M4 24 H25 L27.5 19 L30.5 29 L33.5 12 L36.5 33 L39 24 H62"
+        stroke="rgb(var(--color-card))"
+        strokeWidth="4.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4 24 H25 L27.5 19 L30.5 29 L33.5 12 L36.5 33 L39 24 H62"
+        stroke="rgb(var(--color-teal))"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.85"
+      />
+    </svg>
   );
 }
