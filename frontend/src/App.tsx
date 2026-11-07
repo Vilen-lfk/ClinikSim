@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import AuthLayout from "./components/AuthLayout";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HistoryPage from "./pages/HistoryPage";
@@ -37,8 +38,10 @@ function PageTransition({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-      <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>

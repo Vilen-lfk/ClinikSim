@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+import { motion } from "framer-motion";
+import { useLayoutEffect, useRef, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 
 const FEATURES = [
@@ -7,10 +9,34 @@ const FEATURES = [
   "Получайте разбор ошибок и рекомендации после каждого случая",
 ];
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+/**
+ * Общая рамка страниц входа и регистрации (layout-маршрут).
+ * Не пересоздаётся при переходе между ними: высота окна плавно подстраивается
+ * под новую форму, а её содержимое проявляется.
+ */
+export default function AuthLayout() {
+  const location = useLocation();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number | "auto">("auto");
+
+  useLayoutEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const measure = () => setHeight(el.offsetHeight);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="grid w-full max-w-3xl overflow-hidden rounded-xl border border-line bg-card shadow-sm md:grid-cols-2">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="grid w-full max-w-3xl overflow-hidden rounded-xl border border-line bg-card shadow-sm md:grid-cols-2"
+      >
         <div className="flex flex-col justify-center border-b border-line p-8 md:border-b-0 md:border-r">
           <div className="flex items-center gap-3">
             <Logo size={40} />
@@ -30,8 +56,27 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             ))}
           </ul>
         </div>
-        <div className="flex flex-col justify-center p-8">{children}</div>
-      </div>
+
+        <div className="flex flex-col justify-center">
+          <motion.div
+            initial={false}
+            animate={{ height }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden"
+          >
+            <div ref={contentRef} className="p-8">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <Outlet />
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 }
