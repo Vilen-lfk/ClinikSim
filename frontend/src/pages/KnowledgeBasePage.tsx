@@ -252,7 +252,6 @@ export default function KnowledgeBasePage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <span aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
-            🔍
           </span>
           <input
             value={query}
