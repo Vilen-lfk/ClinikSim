@@ -56,9 +56,9 @@ export default function NewSimulationPage() {
   const selectedDifficulty = DIFFICULTIES.find((d) => d.key === difficulty);
 
   return (
-    <div className="w-full space-y-8 p-6 lg:px-10">
+    <div className="w-full space-y-8 p-4 sm:p-6 lg:px-10">
       <header>
-        <h1 className="font-serif text-3xl font-extrabold tracking-tight text-ink">Новая симуляция</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">Новая симуляция</h1>
         <p className="mt-1 text-muted">Настройте параметры клинического сценария перед началом</p>
       </header>
 

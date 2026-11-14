@@ -39,9 +39,9 @@ export default function ReviewPage() {
   const weakCriteria = ev.criteria.filter((c) => c.score / c.max_score < 0.7);
 
   return (
-    <div className="w-full space-y-6 p-6 lg:px-10">
+    <div className="w-full space-y-6 p-4 sm:p-6 lg:px-10">
       <header className="space-y-1">
-        <h1 className="font-serif text-2xl font-medium text-ink">Разбор ошибок</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">Разбор ошибок</h1>
         <p className="text-muted">{session.scenario.title}</p>
         <div className="flex flex-wrap gap-2 pt-1 text-xs">
           <span className="rounded-full bg-line px-2 py-1 text-muted">

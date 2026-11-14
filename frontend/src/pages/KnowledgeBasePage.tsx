@@ -243,9 +243,9 @@ export default function KnowledgeBasePage() {
   }, [query, category]);
 
   return (
-    <div className="w-full space-y-6 p-6 lg:px-10">
+    <div className="w-full space-y-6 p-4 sm:p-6 lg:px-10">
       <header>
-        <h1 className="font-serif text-3xl font-extrabold tracking-tight text-ink">Медицинская база знаний</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">Медицинская база знаний</h1>
         <p className="mt-1 text-muted">Справочные материалы по симптомам, заболеваниям и сбору анамнеза</p>
       </header>
 

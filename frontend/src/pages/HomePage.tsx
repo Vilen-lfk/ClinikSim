@@ -34,12 +34,12 @@ export default function HomePage() {
   const weakest = bySpecialty.length >= 2 ? bySpecialty.reduce((a, b) => (b.avg < a.avg ? b : a)) : null;
 
   return (
-    <div className="w-full space-y-8 p-6 lg:px-10">
+    <div className="w-full space-y-8 p-4 sm:p-6 lg:px-10">
       <OnboardingTour />
 
       <header className="space-y-3">
         <div>
-          <h1 className="font-serif text-3xl font-extrabold tracking-tight text-ink">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
             {timeGreeting()}, {user?.full_name || user?.username}
           </h1>
           <p className="mt-1 max-w-md text-muted">

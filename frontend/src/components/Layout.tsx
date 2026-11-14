@@ -5,14 +5,14 @@ import PulseLine from "./PulseLine";
 import Logo from "./Logo";
 
 const BASE_NAV = [
-  { to: "/", label: "Главная", icon: "" },
-  { to: "/new-simulation", label: "Новая симуляция", icon: "" },
-  { to: "/history", label: "История", icon: "" },
-  { to: "/knowledge", label: "Теоретические ведомости", icon: "" },
-  { to: "/profile", label: "Мой профиль", icon: "" },
+  { to: "/", label: "Главная", short: "Главная", icon: "" },
+  { to: "/new-simulation", label: "Новая симуляция", short: "Симуляция", icon: "" },
+  { to: "/history", label: "История", short: "История", icon: "" },
+  { to: "/knowledge", label: "Теоретические ведомости", short: "Теория", icon: "" },
+  { to: "/profile", label: "Мой профиль", short: "Профиль", icon: "" },
 ];
 
-const TEACHER_NAV_ITEM = { to: "/teacher/dashboard", label: "Панель куратора", icon: "" };
+const TEACHER_NAV_ITEM = { to: "/teacher/dashboard", label: "Панель куратора", short: "Куратор", icon: "" };
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -69,7 +69,7 @@ export default function Layout() {
         <Outlet />
       </div>
 
-      <nav className="glass-panel fixed inset-x-0 bottom-0 z-10 flex justify-between border-t border-line/60 px-2 py-1.5 md:hidden print:hidden">
+      <nav className="glass-panel fixed inset-x-0 bottom-0 z-10 flex justify-between border-t border-line/60 px-1 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] md:hidden print:hidden">
         {NAV.map((item) => {
           const active = location.pathname === item.to;
           return (
@@ -77,7 +77,7 @@ export default function Layout() {
               key={item.to}
               to={item.to}
               end
-              className="relative flex flex-1 flex-col items-center gap-0.5 rounded-lg py-1 text-[11px]"
+              className="relative flex min-w-0 flex-1 flex-col items-center gap-0.5 truncate rounded-lg py-1 text-[11px]"
             >
               {active && (
                 <motion.span
@@ -89,7 +89,7 @@ export default function Layout() {
               <span aria-hidden="true" className={`text-base ${active ? "" : "opacity-80"}`}>
                 {item.icon}
               </span>
-              <span className={active ? "font-semibold text-teal-dark" : "text-muted"}>{item.label.split(" ")[0]}</span>
+              <span className={active ? "font-semibold text-teal-dark" : "text-muted"}>{item.short}</span>
             </NavLink>
           );
         })}

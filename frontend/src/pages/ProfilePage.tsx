@@ -83,13 +83,13 @@ export default function ProfilePage() {
     "w-full rounded-lg border border-line bg-paper/70 px-3 py-2 text-sm backdrop-blur-sm focus:border-teal focus:outline-none";
 
   return (
-    <div className="w-full space-y-8 p-6 lg:px-10">
+    <div className="w-full space-y-8 p-4 sm:p-6 lg:px-10">
       <header className="flex items-center gap-4">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-teal to-teal-dark font-serif text-2xl font-bold text-white shadow-glow">
           {(user?.full_name || user?.username || "?").charAt(0).toUpperCase()}
         </div>
         <div>
-          <h1 className="font-serif text-2xl font-bold text-ink">{user?.full_name || user?.username}</h1>
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">{user?.full_name || user?.username}</h1>
           <p className="text-sm text-muted">
             {user?.specialty || "Специальность не указана"}
             {user?.course ? ` · ${user.course}` : ""}

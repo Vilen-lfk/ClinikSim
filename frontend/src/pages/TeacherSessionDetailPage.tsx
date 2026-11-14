@@ -19,10 +19,10 @@ export default function TeacherSessionDetailPage() {
   const ev = session.evaluation;
 
   return (
-    <div className="w-full space-y-5 p-6 lg:px-10">
+    <div className="w-full space-y-5 p-4 sm:p-6 lg:px-10">
       <header className="space-y-1">
         <div className="flex items-center justify-between">
-          <h1 className="font-serif text-2xl font-medium text-ink">{session.scenario.title}</h1>
+          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">{session.scenario.title}</h1>
           <Link to={`/teacher/students/${session.user_id ?? ""}`} className="text-sm text-teal hover:text-teal-dark">
             К сессиям студента
           </Link>

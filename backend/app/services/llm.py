@@ -1,7 +1,7 @@
 import asyncio
 from typing import AsyncIterator
 
-from openai import AsyncOpenAI, OpenAIError, RateLimitError
+from openai import AsyncOpenAI, OpenAIError, PermissionDeniedError, RateLimitError
 
 from app.config import settings
 
@@ -30,16 +30,25 @@ def _get_client() -> AsyncOpenAI:
 RETRY_DELAYS = (3, 8, 15)
 
 RATE_LIMIT_MESSAGE = "ИИ-сервис сейчас перегружен (лимит запросов). Подождите немного и повторите."
+ACCESS_DENIED_MESSAGE = (
+    "ИИ-провайдер отклонил запрос (403, отказ в доступе). Обычно это временный сбой у провайдера "
+    "бесплатной модели — повторите через минуту или смените OPENAI_MODEL в .env."
+)
 
 
 async def _create_with_retry(**kwargs):
-    """Вызов chat.completions.create с повторами при превышении лимита (HTTP 429)."""
+    """Вызов chat.completions.create с повторами при лимите (429) и отказе провайдера (403).
+
+    403 «Access denied by security policy» приходит от провайдера бесплатной модели за OpenRouter
+    и обычно проходит при повторе — так же, как 429.
+    """
     for delay in (*RETRY_DELAYS, None):
         try:
             return await _get_client().chat.completions.create(**kwargs)
-        except RateLimitError as e:
+        except (RateLimitError, PermissionDeniedError) as e:
             if delay is None:
-                raise LLMError(RATE_LIMIT_MESSAGE) from e
+                message = RATE_LIMIT_MESSAGE if isinstance(e, RateLimitError) else ACCESS_DENIED_MESSAGE
+                raise LLMError(message) from e
             await asyncio.sleep(delay)
 
 

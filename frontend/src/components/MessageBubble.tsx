@@ -29,7 +29,7 @@ export default function MessageBubble({ message, streaming = false, patientIniti
           {patientInitials}
         </span>
       )}
-      <div className={`flex max-w-[75%] flex-col ${isStudent ? "items-end" : "items-start"}`}>
+      <div className={`flex max-w-[88%] flex-col sm:max-w-[75%] ${isStudent ? "items-end" : "items-start"}`}>
         <div
           className={`whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
             isStudent

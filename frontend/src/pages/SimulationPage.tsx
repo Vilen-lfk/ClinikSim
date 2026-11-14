@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { ClipboardCheck, LogOut } from "lucide-react";
+import { ChevronDown, ClipboardCheck, LogOut } from "lucide-react";
 import { api, streamPatientReply } from "../api/client";
 import Button from "../components/Button";
 import ChatWindow from "../components/ChatWindow";
@@ -72,6 +72,8 @@ export default function SimulationPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [streaming, setStreaming] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
+  // На телефоне подробности карточки пациента свёрнуты, чтобы чату хватало места
+  const [cardOpen, setCardOpen] = useState(false);
   const [showDiagnosis, setShowDiagnosis] = useState(false);
   const elapsed = useElapsed(session?.created_at);
 
@@ -150,13 +152,18 @@ export default function SimulationPage() {
   const difficulty = DIFFICULTY_LABELS[session.scenario.difficulty] ?? session.scenario.difficulty;
 
   return (
-    <div className="flex h-screen w-full flex-col md:flex-row">
+    <div className="flex h-[calc(100dvh-4rem)] w-full flex-col md:h-screen md:flex-row">
       {/* Карточка пациента */}
-      <aside className="flex shrink-0 flex-col border-b border-line bg-card md:w-72 md:border-b-0 md:border-r">
-        <div className="p-5">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-muted">Карточка пациента</div>
+      <aside className="flex max-h-[45%] shrink-0 flex-col overflow-y-auto border-b border-line bg-card md:max-h-none md:w-72 md:border-b-0 md:border-r">
+        <div className="p-3 md:p-5">
+          <div className="hidden text-[10px] font-semibold uppercase tracking-wider text-muted md:block">Карточка пациента</div>
 
-          <div className="mt-4 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setCardOpen((v) => !v)}
+            aria-expanded={cardOpen}
+            className="flex w-full items-center gap-3 text-left md:pointer-events-none md:mt-4"
+          >
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-teal-light text-sm font-semibold text-teal-dark">
               {pi}
             </span>
@@ -164,8 +171,13 @@ export default function SimulationPage() {
               <div className="font-serif text-base font-bold text-ink">{p.name}</div>
               <div className="text-xs text-muted">{p.age} лет</div>
             </div>
-          </div>
+            <ChevronDown
+              className={`ml-auto h-5 w-5 text-muted transition-transform md:hidden ${cardOpen ? "rotate-180" : ""}`}
+              aria-hidden="true"
+            />
+          </button>
 
+          <div className={`${cardOpen ? "block" : "hidden"} md:block`}>
           <dl className="mt-5 text-sm">
             <div className="flex justify-between border-b border-line py-2.5">
               <dt className="text-muted">Возраст</dt>
@@ -194,6 +206,7 @@ export default function SimulationPage() {
             <LogOut className="h-4 w-4" />
             Выйти из симуляции
           </button>
+          </div>
         </div>
 
         <div className="mt-auto hidden p-5 md:block">
@@ -210,7 +223,7 @@ export default function SimulationPage() {
 
       {/* Чат */}
       <section className="flex min-h-0 min-w-0 flex-1 flex-col bg-paper">
-        <header className="flex items-center justify-between gap-4 border-b border-line bg-card px-5 py-3">
+        <header className="flex items-center justify-between gap-3 border-b border-line bg-card px-3 py-2 sm:px-5 sm:py-3">
           <div className="flex items-center gap-2 text-sm font-medium text-ink">
             <span className="h-2 w-2 rounded-full bg-teal" aria-hidden="true" />
             {streaming ? "Пациент отвечает…" : "Пациент на связи"}
@@ -231,7 +244,7 @@ export default function SimulationPage() {
 
         <AnimatePresence>
           {showDiagnosis && (
-            <div className="px-6 pt-4 lg:px-14">
+            <div className="px-3 pt-3 sm:px-6 sm:pt-4 lg:px-14">
               <DiagnosisForm
                 isLoading={finish.isPending}
                 error={finish.error ? (finish.error as Error).message : null}
@@ -243,7 +256,7 @@ export default function SimulationPage() {
         </AnimatePresence>
 
         {chatError && (
-          <div className="px-6 pt-4 lg:px-14">
+          <div className="px-3 pt-3 sm:px-6 sm:pt-4 lg:px-14">
             <ErrorBanner message={chatError} />
           </div>
         )}

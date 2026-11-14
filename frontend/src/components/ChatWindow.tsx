@@ -54,7 +54,7 @@ export default function ChatWindow({
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <div className="thin-scroll flex-1 space-y-2 overflow-y-auto px-6 py-5 lg:px-14">
+      <div className="thin-scroll flex-1 space-y-2 overflow-y-auto px-3 py-4 sm:px-6 sm:py-5 lg:px-14">
         {startedAt && (
           <div className="mb-3 flex justify-center">
             <span className="rounded-full bg-line/60 px-3 py-1 text-[11px] text-muted">Сессия начата · {startedAt}</span>
@@ -76,7 +76,7 @@ export default function ChatWindow({
         <div ref={bottomRef} />
       </div>
 
-      <div className="px-6 pb-4 lg:px-14">
+      <div className="px-3 pb-3 sm:px-6 sm:pb-4 lg:px-14">
         {hint && (
           <div className="mb-3 flex gap-3 rounded-xl border border-teal/15 bg-teal-light/60 px-4 py-3">
             <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-teal" aria-hidden="true" />

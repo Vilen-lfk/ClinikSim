@@ -90,13 +90,13 @@ export default function ResultsPage() {
 
   return (
     
-    <div className="w-full space-y-5 p-6 lg:px-10">
+    <div className="w-full space-y-5 p-4 sm:p-6 lg:px-10">
       
       {/* Всё внутри этого блока попадает в PDF; кнопки ниже — нет */}
       <motion.div ref={contentRef} variants={listVariants} initial="hidden" animate="show" className="space-y-5">
         <motion.header variants={itemVariants} className="flex items-center justify-between">
           <div>
-            <h1 className="font-serif text-2xl font-medium text-ink">Результаты</h1>
+            <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">Результаты</h1>
             <p className="text-sm text-muted">{session.scenario.title}</p>
           </div>
           <div className="text-right">

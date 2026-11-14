@@ -17,9 +17,9 @@ export default function TeacherStudentSessionsPage() {
   const studentName = sessions.data?.[0]?.student_full_name || sessions.data?.[0]?.student_username || "Студент";
 
   return (
-    <div className="w-full space-y-6 p-6 lg:px-10">
+    <div className="w-full space-y-6 p-4 sm:p-6 lg:px-10">
       <header className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-medium text-ink">{studentName}</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">{studentName}</h1>
         <Link to="/teacher/dashboard" className="text-sm text-teal hover:text-teal-dark">
           К списку студентов
         </Link>

@@ -121,9 +121,9 @@ export default function ScenarioFormPage() {
     "w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm focus:border-teal focus:outline-none";
 
   return (
-    <div className="w-full space-y-6 p-6 lg:px-10">
+    <div className="w-full space-y-6 p-4 sm:p-6 lg:px-10">
       <header>
-        <h1 className="font-serif text-2xl font-medium text-ink">
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
           {isEdit ? "Редактирование сценария" : "Новый сценарий"}
         </h1>
       </header>

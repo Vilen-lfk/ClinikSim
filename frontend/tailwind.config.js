@@ -25,6 +25,8 @@ export default {
         // Ключ "serif" сохранён по всему проекту ради className="font-serif" на заголовках,
         // но теперь указывает на геометрический гротеск без засечек — не на классическую антикву.
         serif: ['"Manrope"', '"Inter"', "system-ui", "sans-serif"],
+        // Заголовки страниц (h1) — современный широкий гротеск с кириллицей
+        display: ['"Unbounded"', '"Manrope"', "system-ui", "sans-serif"],
         sans: ['"Inter"', "system-ui", "sans-serif"],
         mono: ['"IBM Plex Mono"', "monospace"],
       },

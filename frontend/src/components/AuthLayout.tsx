@@ -40,7 +40,7 @@ export default function AuthLayout() {
         <div className="flex flex-col justify-center border-b border-line p-8 md:border-b-0 md:border-r">
           <div className="flex items-center gap-3">
             <Logo size={40} />
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-ink">ClinicSim</h1>
+            <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">ClinicSim</h1>
           </div>
           <p className="mt-2 text-sm text-muted">
             Учебная платформа для отработки сбора анамнеза и постановки диагноза.
